@@ -12,8 +12,12 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        sans: ['-apple-system', 'system-ui', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Ubuntu', '"Helvetica Neue"', 'sans-serif'],
+      },
     },
   },
   plugins: [],
 };
+
 export default config;
