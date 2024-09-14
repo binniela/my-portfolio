@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState, RefObject } from 'react'
-import { motion, useScroll } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 const sections = [
   { id: 'home', title: 'Home' },
@@ -20,7 +20,7 @@ const contactLinks = [
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('home')
-  const { scrollYProgress } = useScroll()
+  //const { scrollYProgress } = useScroll()
 
   // Updated useRef type to RefObject<HTMLDivElement>
   const sectionRefs = useRef<(RefObject<HTMLDivElement> | null)[]>(sections.map(() => React.createRef<HTMLDivElement>()))
@@ -68,6 +68,7 @@ export default function Portfolio() {
         <div>
           <h1 className="text-2xl font-light mb-12">=＾● ⋏ ●＾=</h1>
           <ul className="space-y-4">
+            {/* eslint-disable-next-line @typescript-eslint/no-unused-vars */}
             {sections.map(({ id, title }) => (
               <li key={id}>
                 <button
@@ -85,18 +86,18 @@ export default function Portfolio() {
         <div>
           <h2 className="text-sm font-light mb-2 text-gray-400">CONTACT</h2>
           <ul className="space-y-2">
-            {contactLinks.map(({ title, href }) => (
-              <li key={title}>
-                <a href={href} className="text-sm text-gray-400 hover:text-black transition-colors duration-200">
-                  {title}
-                </a>
-              </li>
-            ))}
+          {contactLinks.map(({ title, href }) => (
+  <li key={title}>
+    <a href={href} className="text-sm text-gray-400 hover:text-black transition-colors duration-200">
+      {title} {/* Ensure 'title' is used here */}
+    </a>
+  </li>
+))}
           </ul>
         </div>
       </nav>
       <main className="ml-64 w-full">
-        {sections.map(({ id, title }, index) => (
+        {sections.map(({ id }, index) => (
           <motion.section
             key={id}
             id={id}
