@@ -1,139 +1,132 @@
 'use client'
 
-
-import React, { useEffect, useRef, useState } from 'react'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-
+import React, { useEffect, useRef, useState, RefObject } from 'react'
+import { motion, useScroll } from 'framer-motion'
 
 const sections = [
- { id: 'home', title: 'Home' },
- { id: 'about', title: 'About' },
- { id: 'education', title: 'Education' },
- { id: 'experience', title: 'Experience' },
- { id: 'projects', title: 'Projects' },
- { id: 'affiliations', title: 'Affiliations' },
+  { id: 'home', title: 'Home' },
+  { id: 'about', title: 'About' },
+  { id: 'education', title: 'Education' },
+  { id: 'experience', title: 'Experience' },
+  { id: 'projects', title: 'Projects' },
+  { id: 'affiliations', title: 'Affiliations' },
 ]
-
 
 const contactLinks = [
- { title: 'Email', href: 'mailto:vincentlc0805@gmail.com' },
- { title: 'LinkedIn', href: '#' },
- { title: 'GitHub', href: '#' },
+  { title: 'Email', href: 'mailto:vincentlc0805@gmail.com' },
+  { title: 'LinkedIn', href: 'https://linkedin.com/in/your-profile' },
+  { title: 'GitHub', href: 'https://github.com/your-username' },
 ]
 
-
 export default function Portfolio() {
- const [activeSection, setActiveSection] = useState('home')
- const { scrollYProgress } = useScroll()
- const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 })
+  const [activeSection, setActiveSection] = useState('home')
+  const { scrollYProgress } = useScroll()
+
+  // Updated useRef type to RefObject<HTMLDivElement>
+  const sectionRefs = useRef<(RefObject<HTMLDivElement> | null)[]>(sections.map(() => React.createRef<HTMLDivElement>()))
+
+  useEffect(() => {
+    const currentRefs = sectionRefs.current; // Copy refs to a local variable
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id)
+          }
+        })
+      },
+      { threshold: 0.5 }
+    )
+
+    currentRefs.forEach((ref) => {
+      if (ref && ref.current) {
+        observer.observe(ref.current)
+      }
+    })
+
+    return () => {
+      currentRefs.forEach((ref) => {
+        if (ref && ref.current) {
+          observer.unobserve(ref.current)
+        }
+      })
+    }
+  }, [])
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
 
- const sectionRefs = useRef(sections.map(() => React.createRef()))
-
-
- useEffect(() => {
-   const observer = new IntersectionObserver(
-     (entries) => {
-       entries.forEach((entry) => {
-         if (entry.isIntersecting) {
-           setActiveSection(entry.target.id)
-         }
-       })
-     },
-     { threshold: 0.5 }
-   )
-
-
-   sectionRefs.current.forEach((ref) => {
-     if (ref.current) {
-       observer.observe(ref.current)
-     }
-   })
-
-
-   return () => {
-     sectionRefs.current.forEach((ref) => {
-       if (ref.current) {
-         observer.unobserve(ref.current)
-       }
-     })
-   }
- }, [])
-
-
- const scrollToSection = (id: string) => {
-   const element = document.getElementById(id)
-   if (element) {
-     element.scrollIntoView({ behavior: 'smooth' })
-   }
- }
-
-
- return (
-   <div className="flex min-h-screen bg-white text-gray-800 font-sans">
-     <nav className="fixed left-0 top-0 h-full w-64 p-8 flex flex-col justify-between z-10">
-       <div>
-         <h1 className="text-2xl font-light mb-12">=＾● ⋏ ●＾=</h1>
-         <ul className="space-y-4">
-           {sections.map(({ id, title }) => (
-             <li key={id}>
-               <button
-                 onClick={() => scrollToSection(id)}
-                 className={`text-left transition-colors duration-200 ${
-                   activeSection === id ? 'text-black' : 'text-gray-400 hover:text-black'
-                 }`}
-               >
-                 {title}
-               </button>
-             </li>
-           ))}
-         </ul>
-       </div>
-       <div>
-         <h2 className="text-sm font-light mb-2 text-gray-400">CONTACT</h2>
-         <ul className="space-y-2">
-           {contactLinks.map(({ title, href }) => (
-             <li key={title}>
-               <a href={href} className="text-sm text-gray-400 hover:text-black transition-colors duration-200">
-                 {title}
-               </a>
-             </li>
-           ))}
-         </ul>
-       </div>
-     </nav>
-     <main className="ml-64 w-full">
-       {sections.map(({ id, title }, index) => (
-         <motion.section
-           key={id}
-           id={id}
-           ref={sectionRefs.current[index]}
-           className="min-h-screen p-16 flex items-center border-b border-gray-100"
-           initial={{ opacity: 0 }}
-           whileInView={{ opacity: 1 }}
-           transition={{ duration: 1.2 }}
-           viewport={{ once: false, amount: 0.8 }}
-         >
-           <motion.div
-             className="max-w-3xl"
-             initial={{ y: 50, opacity: 0 }}
-             whileInView={{ y: 0, opacity: 1 }}
-             transition={{ duration: 1.2, delay: 0.2 }}
-           >
-             {id === 'home' && (
-               <div className="text-left">
-                 <h2 className="text-[12rem] font-light text-gray-800 mb-0 leading-none">Vincent</h2>
-                 <h2 className="text-[12rem] font-light text-gray-800 mb-8 leading-none">La</h2>
-               </div>
-             )}
-             {id === 'about' && (
-               <>
-                 <h2 className="text-6xl font-light text-gray-300 mb-8">About</h2>
-                 <p className="text-lg mb-4">
-                   I'm a passionate student pursuing a B.S. in Business Administration with a focus on Computer Information Systems and Information Security and Forensics at California State Polytechnic University Pomona.
-                 </p>
-                 <p className="text-lg mb-4">
-                   With a perfect 4.0 GPA, I'm dedicated to excelling in my field and constantly expanding my knowledge in cybersecurity, cloud infrastructure, and programming.
+  return (
+    <div className="flex min-h-screen bg-white text-gray-800 font-sans">
+      <nav className="fixed left-0 top-0 h-full w-64 p-8 flex flex-col justify-between z-10">
+        <div>
+          <h1 className="text-2xl font-light mb-12">=＾● ⋏ ●＾=</h1>
+          <ul className="space-y-4">
+            {sections.map(({ id, title }) => (
+              <li key={id}>
+                <button
+                  onClick={() => scrollToSection(id)}
+                  className={`text-left transition-colors duration-200 ${
+                    activeSection === id ? 'text-black' : 'text-gray-400 hover:text-black'
+                  }`}
+                >
+                  {title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2 className="text-sm font-light mb-2 text-gray-400">CONTACT</h2>
+          <ul className="space-y-2">
+            {contactLinks.map(({ title, href }) => (
+              <li key={title}>
+                <a href={href} className="text-sm text-gray-400 hover:text-black transition-colors duration-200">
+                  {title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+      <main className="ml-64 w-full">
+        {sections.map(({ id, title }, index) => (
+          <motion.section
+            key={id}
+            id={id}
+            ref={sectionRefs.current[index]}
+            className="min-h-screen p-16 flex items-center border-b border-gray-100"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1.2 }}
+            viewport={{ once: false, amount: 0.8 }}
+          >
+            <motion.div
+              className="max-w-3xl"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+            >
+              {id === 'home' && (
+                <div className="text-left">
+                  <h2 className="text-[12rem] font-light text-gray-800 mb-0 leading-none">Vincent</h2>
+                  <h2 className="text-[12rem] font-light text-gray-800 mb-8 leading-none">La</h2>
+                </div>
+              )}
+              {id === 'about' && (
+                <>
+                  <h2 className="text-6xl font-light text-gray-300 mb-8">About</h2>
+                  <p className="text-lg mb-4">
+                    I&apos;m a passionate student pursuing a B.S. in Business Administration with a focus on Computer Information Systems and Information Security and Forensics at California State Polytechnic University Pomona.
+                  </p>
+                  <p className="text-lg mb-4">
+                   With a perfect 4.0 GPA, I&apos;m dedicated to excelling in my field and constantly expanding my knowledge in cybersecurity, cloud infrastructure, and programming.
                  </p>
                </>
              )}
