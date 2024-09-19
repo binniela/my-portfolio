@@ -226,11 +226,11 @@ export default function Portfolio() {
                 <>
                   <h2 className="text-6xl font-light text-gray-300 mb-8">Affiliations</h2>
                   <div className="mb-4">
-                    <h3 className="text-2xl font-light mb-2">Cal Poly Fast | Blue Team Member</h3>
+                    <h3 className="text-2xl font-light mb-2">Cal Poly Fast | NCL Red Team Captain</h3>
                     <p>Cal Poly Pomona, 2023</p>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-light mb-2">GDSC (Google Developer Student Club) | Project Member</h3>
+                    <h3 className="text-2xl font-light mb-2">GDSC (Google Developer Student Club) | Watchdog Project Member</h3>
                     <p>Cal Poly Pomona, 2024</p>
                   </div>
                 </>
